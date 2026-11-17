@@ -15,8 +15,7 @@
 ImproveGame 在 Steam 创意工坊只发布 **2025.9 / 2026.1 / 2026.3** 三个分支,
 没有 2025.6,所以在 tModLoader 2025.6.3.0 上创意工坊里**没有可安装的版本**。
 
-如果你的情况是「**必须留在旧 tML**」——比如想玩老版本灾厄、保住旧存档、
-或者联机时版本要一致——那本项目正好对应这个场景。
+如果你的情况是「**必须留在旧 tML**」——比如想玩老版本灾厄但找不到对应版本的improvegame——那本项目正好对应这个场景。
 
 **如果只是单纯想让 tML 停在旧版、灾厄用新版也无所谓,那没必要用这个,
 创意工坊里的最新 ImproveGame 更省事。**
@@ -86,7 +85,7 @@ System.Collections.Generic.KeyNotFoundException: The given key 'BlueCandleBuff' 
 
 ---
 
-## 如果想自己锁环境(踩过的坑)
+## 如果想自己锁环境
 
 Steam 会按 manifest 校验 `steamapps\common\tModLoader`,
 **手动替换过文件后,只要点一次 Steam 的「开始游戏」,就会被"修复"回最新版**,
