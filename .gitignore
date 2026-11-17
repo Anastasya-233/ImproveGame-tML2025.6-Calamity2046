@@ -1,0 +1,13 @@
+﻿# 构建产物
+bin/
+obj/
+*.user
+
+# 本机路径相关
+canonical-refs.targets
+BuildConfig.json
+
+# 不提交的第三方内容
+*.tmod.bak
+CalamityMod*.tmod
+CalamityCN*.tmod

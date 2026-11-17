@@ -1,0 +1,104 @@
+﻿diff --git a/Common/ModSystems/ModIntegrationsSystem.cs b/Common/ModSystems/ModIntegrationsSystem.cs
+index 9a9cea31..fecd7eb7 100644
+--- a/Common/ModSystems/ModIntegrationsSystem.cs
++++ b/Common/ModSystems/ModIntegrationsSystem.cs
+@@ -284,26 +284,62 @@ public class ModIntegrationsSystem : ModSystem
+         mechTansfer.Call("RegisterAdapterReflection", adapter, new int[] { ModContent.TileType<Content.Tiles.Autofisher>() });
+     }
+ 
++    // [适配改动] 旧版灾厄(Calamity 2.0.4.6)里缺少部分物品/增益,
++    // 原来的 mod.Find<T>(name) 找不到会抛 KeyNotFoundException,导致整个模组被 tML 禁用。
++    // 统一改成"找不到就跳过",能找到的功能全部保留。
++    private static bool TryFindItem(Mod mod, string name, out int type)
++    {
++        if (mod.TryFind(name, out ModItem item))
++        {
++            type = item.Type;
++            return true;
++        }
++
++        type = -1;
++        return false;
++    }
++
++    private static bool TryFindBuff(Mod mod, string name, out int type)
++    {
++        if (mod.TryFind(name, out ModBuff buff))
++        {
++            type = buff.Type;
++            return true;
++        }
++
++        type = -1;
++        return false;
++    }
++
+     private static void AddCraftStationIntegration(Mod mod, string itemName, List<int> tileIDs)
+     {
+-        PortableStations[mod.Find<ModItem>(itemName).Type] = tileIDs;
++        if (TryFindItem(mod, itemName, out int itemType))
++            PortableStations[itemType] = tileIDs;
+     }
+ 
+     private static void AddBuffIntegration(Mod mod, string itemName, bool isPlaceable, params string[] buffNames)
+     {
++        if (!TryFindItem(mod, itemName, out int itemType))
++            return;
++
+         List<int> buffs = [];
+         foreach (string buffName in buffNames)
+-            buffs.Add(mod.Find<ModBuff>(buffName).Type);
++            if (TryFindBuff(mod, buffName, out int buffType))
++                buffs.Add(buffType);
++
++        if (buffs.Count == 0)
++            return;
+ 
+         if (isPlaceable)
+-            ModdedPlaceableItemBuffs[mod.Find<ModItem>(itemName).Type] = buffs;
++            ModdedPlaceableItemBuffs[itemType] = buffs;
+         else
+-            ModdedPotionBuffs[mod.Find<ModItem>(itemName).Type] = buffs;
++            ModdedPotionBuffs[itemType] = buffs;
+     }
+ 
+     private static void AddInfBuffsConsume(Mod mod, string itemName)
+     {
+-        ModdedInfBuffsConsume.Add(mod.Find<ModItem>(itemName).Type);
++        if (TryFindItem(mod, itemName, out int itemType))
++            ModdedInfBuffsConsume.Add(itemType);
+     }
+ 
+     /// <param name="BuffIDOrName">填int（原版）或string（Mod）</param>
+@@ -314,23 +350,27 @@ public class ModIntegrationsSystem : ModSystem
+         foreach (object obj in removeBuffIDOrName)
+         {
+             if (obj is int removeBuffID) buffs.Add(removeBuffID);
+-            if (obj is string removeBuffName) buffs.Add(mod.Find<ModBuff>(removeBuffName).Type);
++            if (obj is string removeBuffName && TryFindBuff(mod, removeBuffName, out int removeBuffType))
++                buffs.Add(removeBuffType); // [适配改动] 旧版灾厄缺该增益时跳过,不再抛异常
+         }
+ 
+         if (BuffIDOrName is int buffID) ModdedBuffConflicts[buffID] = buffs;
+-        if (BuffIDOrName is string buffName) ModdedBuffConflicts[mod.Find<ModBuff>(buffName).Type] = buffs;
++        if (BuffIDOrName is string buffName && TryFindBuff(mod, buffName, out int buffType))
++            ModdedBuffConflicts[buffType] = buffs;
+     }
+ 
+     private static void AddHomeTpIntegration(Mod mod, string itemName, bool isPotion, bool isComebackItem)
+     {
+         // 属于是自我测试了
+-        Call("AddHomeTpItem", mod.Find<ModItem>(itemName).Type, isPotion, isComebackItem);
++        if (TryFindItem(mod, itemName, out int itemType))
++            Call("AddHomeTpItem", itemType, isPotion, isComebackItem);
+     }
+ 
+     private static void AddFishingAccIntegration(Mod mod, string itemName, float speed, int power, bool tackleBox,
+         bool lavaFishing)
+     {
+-        FishingStatLookup[mod.Find<ModItem>(itemName).Type] = new FishingStat(power, speed, tackleBox, lavaFishing);
++        if (TryFindItem(mod, itemName, out int itemType))
++            FishingStatLookup[itemType] = new FishingStat(power, speed, tackleBox, lavaFishing);
+     }
+ 
+     private static void DoShopLookupIntegration()

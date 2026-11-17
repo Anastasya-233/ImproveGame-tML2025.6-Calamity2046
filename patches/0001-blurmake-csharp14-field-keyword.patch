@@ -1,0 +1,23 @@
+﻿diff --git a/UIFramework/BlurMakeSystem.cs b/UIFramework/BlurMakeSystem.cs
+index 5f1d91c5..68aa445f 100644
+--- a/UIFramework/BlurMakeSystem.cs
++++ b/UIFramework/BlurMakeSystem.cs
+@@ -18,10 +18,16 @@ public class BlurMakeSystem : ModSystem
+     /// </summary>
+     public static bool BlurAvailable => !Main.gameMenu && EnableBlur && Lighting.NotRetro;
+ 
++    // [适配改动] 原代码使用 C# 14 的 field 关键字:
++    //     get; internal set => field = Math.Max(value, 1f);
++    // 这里改写为显式后备字段, 行为完全一致, 兼容 .NET SDK 8 (C# 12)。
++    private static float _blurZoomMultiplierDenominator = 4f;
++
+     public static float BlurZoomMultiplierDenominator
+     {
+-        get; internal set => field = Math.Max(value, 1f);
+-    } = 4f;
++        get => _blurZoomMultiplierDenominator;
++        internal set => _blurZoomMultiplierDenominator = Math.Max(value, 1f);
++    }
+ 
+     /// <summary> 模糊迭代次数 </summary>
+     public static int BlurIterationCount { get; internal set; } = 3;
