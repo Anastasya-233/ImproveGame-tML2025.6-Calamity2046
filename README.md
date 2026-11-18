@@ -98,8 +98,16 @@ Steam 会按 manifest 校验 `steamapps\common\tModLoader`,
 3. 用副本里的 `start-tModLoader.bat` 启动,不点 Steam 的「开始游戏」
 4. 可选:把 `appmanifest_1281930.acf` 的 `AutoUpdateBehavior` 改成 `1`
 
-旧版 Calamity / 旧版 tML 我是在社区归档站找的(非官方,版权归原作者):
-[Terraria Internet Archive](https://hia64.github.io)。**本项目不提供这些文件。**
+旧版文件我是在下面这几个公开渠道找的(**都是非官方来源,版权归原作者;
+本项目不提供、也不再分发这些文件**):
+
+| 需要什么 | 去哪里 |
+|---|---|
+| 旧版 Calamity Mod(`.tmod`) | [Terraria Internet Archive](https://hia64.github.io) —— 社区归档站,收录多个历史版本 |
+| 旧版 tModLoader | [tModLoader GitHub Releases](https://github.com/tModLoader/tModLoader/releases) —— 注意这个页面主要是版本发布说明,**有没有可直接运行的完整包要看各版本的 Assets**;完整可玩的安装目录通常来自 Steam depot 或你自己的旧备份 |
+
+> 如果既没保留旧安装目录、也找不到完整的 tML 包,
+> 可以用 Steam 的 depot 机制下载指定的旧 build(需要 Steam 登录)。
 
 ---
 
